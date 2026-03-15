@@ -10,6 +10,7 @@ import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoResponse;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.service.ProdutoService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,5 +34,13 @@ public class ProdutoController {
         return ResponseEntity.status(201).body(response);
     }
 
+    @GetMapping("/listar")
+    public ResponseEntity <List<ProdutoResponse>> getProdutos(){
+        List<Produto> produtos = produtoService.listarProdutos();
 
+        List<ProdutoResponse> produtosResponse = produtos.stream()
+                .map(ProdutoMapper::toResponseDTO)
+                .toList();
+        return ResponseEntity.ok(produtosResponse);
+    }
 }

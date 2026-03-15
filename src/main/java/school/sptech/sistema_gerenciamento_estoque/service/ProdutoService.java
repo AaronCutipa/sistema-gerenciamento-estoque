@@ -6,6 +6,7 @@ import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplic
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.repository.ProdutoRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -24,5 +25,10 @@ public class ProdutoService {
 
         return produtoRepository.save(produto);
     }
+
+    public List<Produto> listarProdutos() {
+        return produtoRepository.findAllByAtivoTrue();
+    }
+
 
 }
