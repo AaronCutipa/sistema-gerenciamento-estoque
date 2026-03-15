@@ -2,7 +2,9 @@ package school.sptech.sistema_gerenciamento_estoque.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
+import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.repository.ProdutoRepository;
 
@@ -30,5 +32,16 @@ public class ProdutoService {
         return produtoRepository.findAllByAtivoTrue();
     }
 
+    public Produto atualizarProduto(Long id, ProdutoRequest  produtoRequest) {
+        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
+
+        produto.setNome(produtoRequest.getNome());
+        produto.setCategoria(produtoRequest.getCategoria());
+        produto.setQuantidade(produtoRequest.getQuantidade());
+        produto.setPreco(produtoRequest.getPreco());
+
+        return produtoRepository.save(produto);
+    }
 
 }

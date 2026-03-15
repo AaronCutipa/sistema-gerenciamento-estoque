@@ -43,4 +43,15 @@ public class ProdutoController {
                 .toList();
         return ResponseEntity.ok(produtosResponse);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoRequest produtoRequest) {
+
+        Produto produtoAtualizado = produtoService.atualizarProduto(id, produtoRequest);
+
+        ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoAtualizado);
+
+        return ResponseEntity.ok(response);
+
+    }
 }
