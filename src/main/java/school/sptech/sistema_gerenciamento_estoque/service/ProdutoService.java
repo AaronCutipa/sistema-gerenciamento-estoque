@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
+import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueException;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.repository.ProdutoRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,4 +46,26 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
+    public Produto darBaixa(Long id) {
+        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
+
+        if(produto.getQuantidade() <= 0){
+            throw new ProdutoSemEstoqueException("Produto se encontra sem estoque");
+        }
+
+        produto.setQuantidade(produto.getQuantidade() - 1);
+
+        return produtoRepository.save(produto);
+    }
+
+    public Produto removerProduto(Long id) {
+        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
+
+        produto.setAtivo(false);
+        produto.setDataRemocao(LocalDateTime.now());
+
+        return produtoRepository.save(produto);
+    }
 }
