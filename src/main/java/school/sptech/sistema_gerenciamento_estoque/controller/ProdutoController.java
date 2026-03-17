@@ -1,6 +1,10 @@
 package school.sptech.sistema_gerenciamento_estoque.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,11 @@ public class ProdutoController {
         this.produtoService = produtoService;
     }
 
+    @Operation(summary = "Cadastra o produto para o estoque")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição")
+    })
     @PostMapping
     public ResponseEntity <ProdutoResponse> postProduto(@RequestBody @Valid ProdutoRequest produtoRequest) {
         Produto produto = ProdutoMapper.toEntity(produtoRequest);
@@ -31,9 +40,14 @@ public class ProdutoController {
 
         ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoSalvo);
 
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Lista todos os produtos do estoque")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição")
+    })
     @GetMapping("/listar")
     public ResponseEntity <List<ProdutoResponse>> getProdutos(){
         List<Produto> produtos = produtoService.listarProdutos();

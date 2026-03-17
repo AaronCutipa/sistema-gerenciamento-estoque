@@ -1,5 +1,6 @@
 package school.sptech.sistema_gerenciamento_estoque.repository;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 

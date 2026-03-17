@@ -19,21 +19,15 @@ public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
 
+    // Cadastro do produto
     public Produto cadastrarProduto(Produto produto){
         produto.setCodigo(UUID.randomUUID());
-
-        if(produtoRepository.existsByCodigo(produto.getCodigo())){
-            throw new ProdutoCodigoDuplicadoException("Código já cadastrado");
-        }
         produto.setAtivo(true);
 
         return produtoRepository.save(produto);
     }
 
-    public List<Produto> listarProdutos() {
-        return produtoRepository.findAllByAtivoTrue();
-    }
-
+    // Atualizar Produto
     public Produto atualizarProduto(Long id, ProdutoRequest  produtoRequest) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
@@ -67,5 +61,9 @@ public class ProdutoService {
         produto.setDataRemocao(LocalDateTime.now());
 
         return produtoRepository.save(produto);
+    }
+
+    public List<Produto> listarProdutos() {
+        return produtoRepository.findAllByAtivoTrue();
     }
 }
