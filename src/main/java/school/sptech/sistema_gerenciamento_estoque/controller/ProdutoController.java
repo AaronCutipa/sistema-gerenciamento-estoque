@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import school.sptech.sistema_gerenciamento_estoque.dto.BaixaEstoqueRequest;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoMapper;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoResponse;
@@ -78,8 +79,11 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}/baixa")
-    public ResponseEntity<ProdutoResponse> darBaixa(@PathVariable Long id) {
-        Produto baixaFeita = produtoService.darBaixa(id);
+    public ResponseEntity<ProdutoResponse> darBaixa(
+            @PathVariable Long id,
+            @RequestBody @Valid BaixaEstoqueRequest quantidadeRequest
+    ) {
+        Produto baixaFeita = produtoService.darBaixa(id, quantidadeRequest.getQuantidade());
 
         ProdutoResponse response = ProdutoMapper.toResponseDTO(baixaFeita);
 

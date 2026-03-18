@@ -6,6 +6,7 @@ import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueException;
+import school.sptech.sistema_gerenciamento_estoque.exception.QuantidadeInvalidaException;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.repository.ProdutoRepository;
 
@@ -47,15 +48,21 @@ public class ProdutoService {
     }
 
     // Baixa no Estoque
-    public Produto darBaixa(Long id) {
+    public Produto darBaixa(Long id, Integer quantidade) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
 
-        if(produto.getQuantidade() <= 0){
-            throw new ProdutoSemEstoqueException("Produto se encontra sem estoque");
+        if(quantidade == null || quantidade <= 0) {
+            throw new QuantidadeInvalidaException("A quantidade deve ser maior que zero");
         }
 
-        produto.setQuantidade(produto.getQuantidade() - 1);
+        if (quantidade > produto.getQuantidade()) {
+            throw new ProdutoSemEstoqueException(
+                    "Estoque insuficiente. Disponível: " + produto.getQuantidade()
+            );
+        }
+
+        produto.setQuantidade(produto.getQuantidade() - quantidade);
 
         return produtoRepository.save(produto);
     }

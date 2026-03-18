@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueException;
+import school.sptech.sistema_gerenciamento_estoque.exception.QuantidadeInvalidaException;
 
 import java.time.LocalDateTime;
 
@@ -58,6 +59,21 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
 
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+    }
+
+    @ExceptionHandler(QuantidadeInvalidaException.class)
+    public ResponseEntity<ErrorResponse> handleQuantidadeInvalida(
+            QuantidadeInvalidaException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse erro = new ErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                "Quantidade inválida",
+                ex.getMessage(),
+                request.getRequestURI(),
+                LocalDateTime.now()
+        );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
 
