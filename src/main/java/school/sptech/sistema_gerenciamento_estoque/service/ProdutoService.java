@@ -3,6 +3,7 @@ package school.sptech.sistema_gerenciamento_estoque.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
+import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoUpdateRequest;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueException;
@@ -29,20 +30,20 @@ public class ProdutoService {
     }
 
     // Atualizar Produto
-    public Produto atualizarProduto(Long id, ProdutoRequest  produtoRequest) {
+    public Produto atualizarProduto(Long id, ProdutoUpdateRequest  produtoUpdateRequest) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
 
-        if(!produto.getCodigo().equals(produtoRequest.getCodigo())) {
-            if(produtoRepository.existsByCodigoAndIdNot(produtoRequest.getCodigo(), id)) {
+        if(!produto.getCodigo().equals(produtoUpdateRequest.getCodigo())) {
+            if(produtoRepository.existsByCodigoAndIdNot(produtoUpdateRequest.getCodigo(), id)) {
                 throw new ProdutoCodigoDuplicadoException("Código já cadastrado para outro produto");
             }
         }
-            produto.setCodigo(produtoRequest.getCodigo());
-            produto.setNome(produtoRequest.getNome());
-            produto.setCategoria(produtoRequest.getCategoria());
-            produto.setQuantidade(produtoRequest.getQuantidade());
-            produto.setPreco(produtoRequest.getPreco());
+            produto.setCodigo(produtoUpdateRequest.getCodigo());
+            produto.setNome(produtoUpdateRequest.getNome());
+            produto.setCategoria(produtoUpdateRequest.getCategoria());
+            produto.setQuantidade(produtoUpdateRequest.getQuantidade());
+            produto.setPreco(produtoUpdateRequest.getPreco());
 
         return produtoRepository.save(produto);
     }

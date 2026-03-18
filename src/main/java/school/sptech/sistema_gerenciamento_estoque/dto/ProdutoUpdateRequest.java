@@ -1,6 +1,5 @@
 package school.sptech.sistema_gerenciamento_estoque.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,9 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProdutoRequest {
+public class ProdutoUpdateRequest {
+    @NotNull
+    private UUID codigo;
     @NotBlank
     private String nome;
     @NotBlank

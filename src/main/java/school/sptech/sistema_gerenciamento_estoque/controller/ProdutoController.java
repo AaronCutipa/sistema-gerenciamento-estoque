@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import school.sptech.sistema_gerenciamento_estoque.dto.BaixaEstoqueRequest;
-import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoMapper;
-import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
-import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoResponse;
+import school.sptech.sistema_gerenciamento_estoque.dto.*;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.service.ProdutoService;
 
@@ -68,9 +65,9 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Erro na requisição")
     })
     @PutMapping("/{id}/atualizar")
-    public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoRequest produtoRequest) {
+    public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoUpdateRequest produtoUpdateRequest) {
 
-        Produto produtoAtualizado = produtoService.atualizarProduto(id, produtoRequest);
+        Produto produtoAtualizado = produtoService.atualizarProduto(id, produtoUpdateRequest);
 
         ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoAtualizado);
 
