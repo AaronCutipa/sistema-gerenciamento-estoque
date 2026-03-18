@@ -81,4 +81,12 @@ public class ProdutoService {
     public List<Produto> listarProdutos() {
         return produtoRepository.findAllByAtivoTrue();
     }
+
+    public Produto buscarProdutoPorId(Long id){
+        Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
+                .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com ID " + id +" não encontrado ou está removido"));
+
+        return produto;
+
+    }
 }

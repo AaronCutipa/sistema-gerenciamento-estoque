@@ -95,4 +95,13 @@ public class ProdutoController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/{id}/buscarPorId")
+    public ResponseEntity<ProdutoResponse> buscarProdutoPorId(@PathVariable Long id) {
+       Produto produtoEncontrado = produtoService.buscarProdutoPorId(id);
+
+       ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoEncontrado);
+
+        return ResponseEntity.ok(response);
+    }
 }
