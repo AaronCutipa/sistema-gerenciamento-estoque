@@ -2,7 +2,6 @@ package school.sptech.sistema_gerenciamento_estoque.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoRequest;
 import school.sptech.sistema_gerenciamento_estoque.dto.ProdutoUpdateRequest;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplicadoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
@@ -10,6 +9,7 @@ import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueEx
 import school.sptech.sistema_gerenciamento_estoque.exception.QuantidadeInvalidaException;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 import school.sptech.sistema_gerenciamento_estoque.repository.ProdutoRepository;
+import school.sptech.sistema_gerenciamento_estoque.util.ValidacaoUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +21,6 @@ public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
 
-    // Cadastro do produto
     public Produto cadastrarProduto(Produto produto){
         produto.setCodigo(UUID.randomUUID());
         produto.setAtivo(true);
@@ -29,7 +28,6 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    // Atualizar Produto
     public Produto atualizarProduto(Long id, ProdutoUpdateRequest  produtoUpdateRequest) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
@@ -48,7 +46,6 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    // Baixa no Estoque
     public Produto darBaixa(Long id, Integer quantidade) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
@@ -85,8 +82,12 @@ public class ProdutoService {
     public Produto buscarProdutoPorId(Long id){
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com ID " + id +" não encontrado ou está removido"));
-
         return produto;
+    }
 
+    public List<Produto> filtrarProdutoPorNomeOuCategoria(String nome, String categoria) {
+        String nomeNormalizado = (nome == null) ? null : nome.trim().toLowerCase();
+        String categoriaNormalizada = (categoria == null) ? null : categoria.trim().toLowerCase();
+        return produtoRepository.filtrarProdutos(nomeNormalizado, categoriaNormalizada);
     }
 }

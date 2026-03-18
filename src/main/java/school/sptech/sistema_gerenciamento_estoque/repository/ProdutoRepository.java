@@ -1,6 +1,8 @@
 package school.sptech.sistema_gerenciamento_estoque.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 
 import java.util.List;
@@ -12,8 +14,13 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     Optional<Produto> findByIdAndAtivoTrue(Long id);
     boolean existsByCodigoAndIdNot(UUID codigo, Long id);
     List<Produto> findAllByAtivoTrue();
-    List<Produto> findByNomeContainingAndAtivoTrue(String nome);
-    List<Produto> findByCategoriaContainingAndAtivoTrue(String categoria);
-    List<Produto> findByNomeContainingAndCategoriaContainingAndAtivoTrue(String nome, String categoria);
+
+    @Query("""
+    SELECT p FROM Produto p
+    WHERE p.ativo = true
+    AND (:nome IS NULL OR LOWER(p.nome) LIKE LOWER(CONCAT('%', :nome, '%')))
+    AND (:categoria IS NULL OR LOWER(p.categoria) LIKE LOWER(CONCAT('%', :categoria, '%')))
+    """)
+    List<Produto> filtrarProdutos(@Param("nome") String nome, @Param("categoria")String categoria);
 
 }

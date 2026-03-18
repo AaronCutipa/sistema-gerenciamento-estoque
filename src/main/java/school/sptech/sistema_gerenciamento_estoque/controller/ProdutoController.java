@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import school.sptech.sistema_gerenciamento_estoque.dto.*;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
@@ -15,8 +18,9 @@ import school.sptech.sistema_gerenciamento_estoque.service.ProdutoService;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
+@Validated
 @RestController
+@ControllerAdvice
 @RequestMapping("/produtos")
 public class ProdutoController {
 
@@ -32,13 +36,12 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Erro na requisição")
     })
     @PostMapping
-    public ResponseEntity <ProdutoResponse> postProduto(@RequestBody @Valid ProdutoRequest produtoRequest) {
+    public ResponseEntity <ProdutoResponse> postProduto(
+            @RequestBody @Valid ProdutoRequest produtoRequest
+    ) {
         Produto produto = ProdutoMapper.toEntity(produtoRequest);
-
         Produto produtoSalvo = produtoService.cadastrarProduto(produto);
-
         ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoSalvo);
-
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -48,9 +51,8 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Erro na requisição")
     })
     @GetMapping("/listar")
-    public ResponseEntity <List<ProdutoResponse>> getProdutos(){
+    public ResponseEntity <List<ProdutoResponse>> listarProdutos(){
         List<Produto> produtos = produtoService.listarProdutos();
-
         List<ProdutoResponse> produtosResponse = produtos.stream()
                 .map(ProdutoMapper::toResponseDTO)
                 .toList();
@@ -65,12 +67,12 @@ public class ProdutoController {
             @ApiResponse(responseCode = "400", description = "Erro na requisição")
     })
     @PutMapping("/{id}/atualizar")
-    public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoUpdateRequest produtoUpdateRequest) {
-
+    public ResponseEntity<ProdutoResponse> atualizarProduto(
+            @PathVariable Long id,
+            @RequestBody @Valid ProdutoUpdateRequest produtoUpdateRequest
+    ) {
         Produto produtoAtualizado = produtoService.atualizarProduto(id, produtoUpdateRequest);
-
         ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoAtualizado);
-
         return ResponseEntity.ok(response);
 
     }
@@ -81,27 +83,36 @@ public class ProdutoController {
             @RequestBody @Valid BaixaEstoqueRequest quantidadeRequest
     ) {
         Produto baixaFeita = produtoService.darBaixa(id, quantidadeRequest.getQuantidade());
-
         ProdutoResponse response = ProdutoMapper.toResponseDTO(baixaFeita);
-
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}/remover")
-    public ResponseEntity<ProdutoResponse> removerProduto(@PathVariable Long id) {
+    public ResponseEntity<ProdutoResponse> removerProduto(
+            @PathVariable Long id
+    ) {
         Produto produtoDeletado = produtoService.removerProduto(id);
-
         ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoDeletado);
-
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/buscarPorId")
-    public ResponseEntity<ProdutoResponse> buscarProdutoPorId(@PathVariable Long id) {
+    public ResponseEntity<ProdutoResponse> buscarProdutoPorId(
+            @PathVariable @NotNull @Positive Long id
+    ) {
        Produto produtoEncontrado = produtoService.buscarProdutoPorId(id);
-
        ProdutoResponse response = ProdutoMapper.toResponseDTO(produtoEncontrado);
+        return ResponseEntity.ok(response);
+    }
 
+    @GetMapping("/filtrar")
+    public ResponseEntity<List<ProdutoResponse>> listarPorFiltros(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String categoria) {
+        List<Produto> produtos = produtoService.filtrarProdutoPorNomeOuCategoria(nome, categoria);
+        List<ProdutoResponse> response = produtos.stream()
+                .map(ProdutoMapper::toResponseDTO)
+                .toList();
         return ResponseEntity.ok(response);
     }
 }
