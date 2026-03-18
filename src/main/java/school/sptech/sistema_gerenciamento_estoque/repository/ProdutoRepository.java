@@ -1,6 +1,5 @@
 package school.sptech.sistema_gerenciamento_estoque.repository;
 
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 
@@ -9,10 +8,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    Boolean existsByCodigo(UUID codigo);
+    boolean existsByCodigo(UUID codigo);
     Optional<Produto> findByIdAndAtivoTrue(Long id);
+    boolean existsByCodigoAndIdNot(UUID codigo, Long id);
     List<Produto> findAllByAtivoTrue();
     List<Produto> findByNomeContainingAndAtivoTrue(String nome);
     List<Produto> findByCategoriaContainingAndAtivoTrue(String categoria);
     List<Produto> findByNomeContainingAndCategoriaContainingAndAtivoTrue(String nome, String categoria);
+
 }

@@ -32,14 +32,21 @@ public class ProdutoService {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));
 
-        produto.setNome(produtoRequest.getNome());
-        produto.setCategoria(produtoRequest.getCategoria());
-        produto.setQuantidade(produtoRequest.getQuantidade());
-        produto.setPreco(produtoRequest.getPreco());
+        if(!produto.getCodigo().equals(produtoRequest.getCodigo())) {
+            if(produtoRepository.existsByCodigoAndIdNot(produtoRequest.getCodigo(), id)) {
+                throw new ProdutoCodigoDuplicadoException("Código já cadastrado para outro produto");
+            }
+        }
+            produto.setCodigo(produtoRequest.getCodigo());
+            produto.setNome(produtoRequest.getNome());
+            produto.setCategoria(produtoRequest.getCategoria());
+            produto.setQuantidade(produtoRequest.getQuantidade());
+            produto.setPreco(produtoRequest.getPreco());
 
         return produtoRepository.save(produto);
     }
 
+    // Baixa no Estoque
     public Produto darBaixa(Long id) {
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto não encontrado"));

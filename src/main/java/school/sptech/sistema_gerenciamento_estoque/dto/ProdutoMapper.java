@@ -6,6 +6,7 @@ public class ProdutoMapper {
     public static Produto toEntity(ProdutoRequest dto) {
         Produto produto = new Produto();
 
+        produto.setCodigo(dto.getCodigo());
         produto.setNome(dto.getNome());
         produto.setCategoria(dto.getCategoria());
         produto.setQuantidade(dto.getQuantidade());

@@ -17,6 +17,7 @@ import school.sptech.sistema_gerenciamento_estoque.service.ProdutoService;
 import java.util.ArrayList;
 import java.util.List;
 
+@ControllerAdvice
 @RestController
 @RequestMapping("/produtos")
 public class ProdutoController {
@@ -58,6 +59,13 @@ public class ProdutoController {
         return ResponseEntity.ok(produtosResponse);
     }
 
+    @Operation(summary = "Atualiza o produto pelo id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
+            @ApiResponse(responseCode = "409", description = "Código duplicado"),
+            @ApiResponse(responseCode = "404", description = "Produto não existe"),
+            @ApiResponse(responseCode = "400", description = "Erro na requisição")
+    })
     @PutMapping("/{id}/atualizar")
     public ResponseEntity<ProdutoResponse> atualizarProduto(@PathVariable Long id, @RequestBody @Valid ProdutoRequest produtoRequest) {
 
