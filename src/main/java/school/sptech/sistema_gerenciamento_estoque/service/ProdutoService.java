@@ -75,17 +75,13 @@ public class ProdutoService {
         return produtoRepository.save(produto);
     }
 
-    public List<Produto> listarProdutos() {
-        return produtoRepository.findAllByAtivoTrue();
-    }
-
     public Produto buscarProdutoPorId(Long id){
         Produto produto = produtoRepository.findByIdAndAtivoTrue(id)
                 .orElseThrow(() -> new ProdutoNaoEncontradoException("Produto com ID " + id +" não encontrado ou está removido"));
         return produto;
     }
 
-    public List<Produto> filtrarProdutoPorNomeOuCategoria(String nome, String categoria) {
+    public List<Produto> listar(String nome, String categoria) {
         String nomeNormalizado = (nome == null) ? null : nome.trim().toLowerCase();
         String categoriaNormalizada = (categoria == null) ? null : categoria.trim().toLowerCase();
         return produtoRepository.filtrarProdutos(nomeNormalizado, categoriaNormalizada);

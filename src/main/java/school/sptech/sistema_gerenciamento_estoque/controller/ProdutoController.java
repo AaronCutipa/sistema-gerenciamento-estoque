@@ -45,20 +45,6 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @Operation(summary = "Lista todos os produtos do estoque")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Lista de produtos retornada com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Erro na requisição")
-    })
-    @GetMapping("/listar")
-    public ResponseEntity <List<ProdutoResponse>> listarProdutos(){
-        List<Produto> produtos = produtoService.listarProdutos();
-        List<ProdutoResponse> produtosResponse = produtos.stream()
-                .map(ProdutoMapper::toResponseDTO)
-                .toList();
-        return ResponseEntity.ok(produtosResponse);
-    }
-
     @Operation(summary = "Atualiza o produto pelo id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
@@ -66,7 +52,7 @@ public class ProdutoController {
             @ApiResponse(responseCode = "404", description = "Produto não existe"),
             @ApiResponse(responseCode = "400", description = "Erro na requisição")
     })
-    @PutMapping("/{id}/atualizar")
+    @PutMapping("/{id}")
     public ResponseEntity<ProdutoResponse> atualizarProduto(
             @PathVariable Long id,
             @RequestBody @Valid ProdutoUpdateRequest produtoUpdateRequest
@@ -87,7 +73,7 @@ public class ProdutoController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}/remover")
+    @DeleteMapping("/{id}")
     public ResponseEntity<ProdutoResponse> removerProduto(
             @PathVariable Long id
     ) {
@@ -96,7 +82,7 @@ public class ProdutoController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}/buscarPorId")
+    @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponse> buscarProdutoPorId(
             @PathVariable @NotNull @Positive Long id
     ) {
@@ -105,11 +91,12 @@ public class ProdutoController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/filtrar")
-    public ResponseEntity<List<ProdutoResponse>> listarPorFiltros(
+    @GetMapping
+    public ResponseEntity<List<ProdutoResponse>> listar(
             @RequestParam(required = false) String nome,
-            @RequestParam(required = false) String categoria) {
-        List<Produto> produtos = produtoService.filtrarProdutoPorNomeOuCategoria(nome, categoria);
+            @RequestParam(required = false) String categoria
+    ) {
+        List<Produto> produtos = produtoService.listar(nome, categoria);
         List<ProdutoResponse> response = produtos.stream()
                 .map(ProdutoMapper::toResponseDTO)
                 .toList();
