@@ -7,12 +7,11 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
-@NoArgsConstructor // Cria construtor vazio
-@AllArgsConstructor // Cria construtor cheio
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Produto {
 
@@ -22,7 +21,7 @@ public class Produto {
 
     @NotNull
     @Column(nullable = false, unique = true)
-    private UUID codigo;
+    private String codigo;
     @NotBlank
     private String nome;
     @NotBlank

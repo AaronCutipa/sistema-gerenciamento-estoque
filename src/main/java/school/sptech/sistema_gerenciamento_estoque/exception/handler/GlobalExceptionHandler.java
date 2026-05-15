@@ -1,6 +1,7 @@
 package school.sptech.sistema_gerenciamento_estoque.exception.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,6 +10,11 @@ import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoCodigoDuplic
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoNaoEncontradoException;
 import school.sptech.sistema_gerenciamento_estoque.exception.ProdutoSemEstoqueException;
 import school.sptech.sistema_gerenciamento_estoque.exception.QuantidadeInvalidaException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import java.time.LocalDateTime;
 
@@ -52,14 +58,14 @@ public class GlobalExceptionHandler {
             HttpServletRequest request) {
 
         ErrorResponse erro = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 "Produto sem estoque",
                 ex.getMessage(),
                 request.getRequestURI(),
                 LocalDateTime.now()
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
     }
 
     @ExceptionHandler(QuantidadeInvalidaException.class)
@@ -91,6 +97,19 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(erro);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> handleValidationErrors(
+            MethodArgumentNotValidException ex) {
+
+        Map<String, String> erros = new HashMap<>();
+        for (FieldError erro : ex.getBindingResult().getFieldErrors()) {
+
+            erros.put(erro.getField(), erro.getDefaultMessage());
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
     }
 
 }

@@ -1,29 +1,61 @@
 package school.sptech.sistema_gerenciamento_estoque.dto;
 
-import jakarta.persistence.Column;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProdutoRequest {
-    @NotBlank
-    @Size(min = 3, max = 100)
+    @Schema(
+            example = "Cadeira Gamer",
+            description = "Nome do produto"
+    )
+    @NotBlank(message = "Nome é obrigatório")
+    @Size(
+            min = 3,
+            max = 100,
+            message = "Nome deve ter entre 3 e 100 caracteres"
+    )
     private String nome;
-    @NotBlank
-    @Size(min = 3, max = 50)
+
+    @Schema(
+            example = "Móveis",
+            description = "Categoria do produto"
+    )
+    @NotBlank(message = "Categoria é obrigatória")
+    @Size(
+            min = 3,
+            max = 50,
+            message = "Categoria deve ter entre 3 e 50 caracteres"
+    )
     private String categoria;
-    @NotNull
-    @Min(value = 0)
+
+    @Schema(
+            example = "10",
+            description = "Quantidade em estoque"
+    )
+    @NotNull(message = "Quantidade é obrigatória")
+    @Min(
+            value = 0,
+            message = "Quantidade deve ser maior ou igual a zero"
+    )
     private Integer quantidade;
-    @NotNull
-    @DecimalMin(value = "0.01")
+
+    @Schema(
+            example = "299.90",
+            description = "Preço unitário"
+    )
+    @NotNull(message = "Preço é obrigatório")
+    @DecimalMin(
+            value = "0.01",
+            message = "Preço deve ser maior que zero"
+    )
     private Double preco;
 }

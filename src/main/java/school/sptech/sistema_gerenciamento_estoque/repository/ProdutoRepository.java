@@ -7,13 +7,11 @@ import school.sptech.sistema_gerenciamento_estoque.model.Produto;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
-    boolean existsByCodigo(UUID codigo);
+    boolean existsByCodigo(String codigo);
     Optional<Produto> findByIdAndAtivoTrue(Long id);
-    boolean existsByCodigoAndIdNot(UUID codigo, Long id);
-    List<Produto> findAllByAtivoTrue();
+    boolean existsByCodigoAndIdNot(String codigo, Long id);
 
     @Query("""
     SELECT p FROM Produto p
@@ -22,5 +20,4 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     AND (:categoria IS NULL OR LOWER(p.categoria) LIKE LOWER(CONCAT('%', :categoria, '%')))
     """)
     List<Produto> filtrarProdutos(@Param("nome") String nome, @Param("categoria")String categoria);
-
 }
